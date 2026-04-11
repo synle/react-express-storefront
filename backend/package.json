@@ -1,0 +1,24 @@
+{
+  "name": "shop-backend",
+  "version": "1.0.0",
+  "description": "E-commerce backend with Stripe, PayPal, Google Auth",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "migrate": "npx knex migrate:latest --knexfile knexfile.js",
+    "seed": "npx knex seed:run --knexfile knexfile.js",
+    "migrate:make": "npx knex migrate:make --knexfile knexfile.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.21.0",
+    "google-auth-library": "^9.14.0",
+    "jsonwebtoken": "^9.0.2",
+    "knex": "^3.1.0",
+    "better-sqlite3": "^11.3.0",
+    "stripe": "^17.1.0",
+    "uuid": "^10.0.0"
+  }
+}
