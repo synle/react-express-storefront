@@ -69,6 +69,11 @@ export const cartApi = {
 // --- Payments ---
 export const paymentsApi = {
   getConfig: () => request('/payments/config'),
+  demoPay: (items, card) =>
+    request('/payments/demo/pay', {
+      method: 'POST',
+      body: JSON.stringify({ items, card })
+    }),
   stripeCreateIntent: (items) =>
     request('/payments/stripe/create-payment-intent', {
       method: 'POST',

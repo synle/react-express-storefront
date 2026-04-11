@@ -43,7 +43,9 @@ export default function OrderConfirmation() {
               <span className="order-status">{order.status}</span>
             </div>
             <div>
-              <strong>Payment:</strong> {order.payment_method === 'stripe' ? 'Card (Stripe)' : 'PayPal'}
+              <strong>Payment:</strong> {
+                { stripe: 'Card (Stripe)', paypal: 'PayPal', demo: 'Test Card (Demo)' }[order.payment_method] || order.payment_method
+              }
             </div>
             <div>
               <strong>Date:</strong> {new Date(order.created_at).toLocaleDateString()}
