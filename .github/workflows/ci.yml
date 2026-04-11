@@ -1,0 +1,60 @@
+# CI Pipeline — runs on push to main or manual trigger.
+# Installs deps, runs all tests, builds frontend. Fails the workflow if any step fails.
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  workflow_dispatch:   # Manual trigger from GitHub Actions tab
+
+jobs:
+  test-and-build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [20]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # ---- Node.js setup ----
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      # ---- Backend ----
+      - name: Install backend dependencies
+        working-directory: backend
+        run: npm ci
+
+      - name: Run backend unit tests
+        working-directory: backend
+        run: npx jest tests/unit --verbose
+
+      - name: Run backend integration tests
+        working-directory: backend
+        run: npx jest tests/integration --verbose
+
+      # ---- Frontend ----
+      - name: Install frontend dependencies
+        working-directory: frontend
+        run: npm ci
+
+      - name: Run frontend tests
+        working-directory: frontend
+        run: npx vitest run
+
+      - name: Build frontend
+        working-directory: frontend
+        run: npm run build
+
+      # ---- Summary ----
+      - name: Upload frontend build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-build
+          path: frontend/dist/
+          retention-days: 7

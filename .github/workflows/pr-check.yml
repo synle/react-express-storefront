@@ -1,0 +1,42 @@
+# PR Check — runs on pull requests targeting main or master.
+# Validates that tests pass and the app builds before merge.
+name: PR Check
+
+on:
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      # ---- Backend ----
+      - name: Install backend dependencies
+        working-directory: backend
+        run: npm ci
+
+      - name: Run backend tests
+        working-directory: backend
+        run: npx jest --verbose
+
+      # ---- Frontend ----
+      - name: Install frontend dependencies
+        working-directory: frontend
+        run: npm ci
+
+      - name: Run frontend tests
+        working-directory: frontend
+        run: npx vitest run
+
+      - name: Build frontend
+        working-directory: frontend
+        run: npm run build
