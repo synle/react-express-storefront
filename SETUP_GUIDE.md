@@ -558,7 +558,7 @@ Knex.js is a SQL query builder that abstracts database dialect differences:
 ## 12. Project Structure
 
 ```
-commercial/
+react-express-storefront/
 ├── SETUP_GUIDE.md                  ← You are here
 │
 ├── backend/
