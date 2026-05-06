@@ -1,0 +1,64 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Release tag (e.g. v0.1.0)'
+        required: true
+        default: 'v0.0.0'
+      notes:
+        description: 'Release notes (markdown)'
+        required: false
+        default: 'Manual release.'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install backend dependencies
+        working-directory: backend
+        run: npm ci
+
+      - name: Run backend tests
+        working-directory: backend
+        run: npx jest --passWithNoTests
+
+      - name: Install frontend dependencies
+        working-directory: frontend
+        run: npm ci
+
+      - name: Build frontend
+        working-directory: frontend
+        run: npm run build
+
+      - name: Package frontend dist
+        run: |
+          mkdir -p release-artifacts
+          cd frontend && tar -czf ../release-artifacts/storefront-frontend-${{ github.event.inputs.tag }}.tar.gz dist/ && cd ..
+
+      - name: Package backend source
+        run: |
+          tar -czf release-artifacts/storefront-backend-${{ github.event.inputs.tag }}.tar.gz \
+            --exclude='backend/node_modules' --exclude='backend/coverage' \
+            backend/
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.event.inputs.tag }}
+          name: ${{ github.event.inputs.tag }}
+          body: ${{ github.event.inputs.notes }}
+          files: release-artifacts/*
+          draft: false
+          prerelease: false
