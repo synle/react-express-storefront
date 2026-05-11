@@ -1,6 +1,6 @@
 {
   "name": "shop-backend",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "E-commerce backend with Stripe, PayPal, Google Auth",
   "main": "server.js",
   "scripts": {
