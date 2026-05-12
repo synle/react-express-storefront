@@ -10,6 +10,7 @@
     "test:unit": "jest tests/unit",
     "test:integration": "jest tests/integration",
     "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
     "migrate": "npx knex migrate:latest --knexfile knexfile.js",
     "seed": "npx knex seed:run --knexfile knexfile.js",
     "migrate:make": "npx knex migrate:make --knexfile knexfile.js"

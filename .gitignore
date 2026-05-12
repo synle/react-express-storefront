@@ -2,3 +2,7 @@
 
 # Patch artifacts
 *.patch
+
+# Coverage artifacts
+coverage/
+**/coverage/

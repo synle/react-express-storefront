@@ -28,24 +28,36 @@ jobs:
       # ---- Backend ----
       - name: Install backend dependencies
         working-directory: backend
-        run: npm ci
+        run: npm ci || npm install --no-fund --prefer-offline
 
-      - name: Run backend unit tests
+      - name: Run backend tests with coverage
         working-directory: backend
-        run: npx jest tests/unit --verbose
+        run: npm run test:coverage
 
-      - name: Run backend integration tests
-        working-directory: backend
-        run: npx jest tests/integration --verbose
+      - name: Upload backend coverage
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-coverage-node${{ matrix.node-version }}
+          path: backend/coverage/
+          retention-days: 7
 
       # ---- Frontend ----
       - name: Install frontend dependencies
         working-directory: frontend
-        run: npm ci
+        run: npm ci || npm install --no-fund --prefer-offline
 
-      - name: Run frontend tests
+      - name: Run frontend tests with coverage
         working-directory: frontend
-        run: npx vitest run
+        run: npm run test:coverage
+
+      - name: Upload frontend coverage
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-coverage-node${{ matrix.node-version }}
+          path: frontend/coverage/
+          retention-days: 7
 
       - name: Build frontend
         working-directory: frontend
@@ -53,7 +65,7 @@ jobs:
 
       # ---- Summary ----
       - name: Upload frontend build artifact
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@v4
         with:
           name: frontend-build-node${{ matrix.node-version }}
           path: frontend/dist/
